@@ -1,4 +1,4 @@
-# PoshChoco
+# <img height="30px" src="./.media/poshchoco.png" alt="PoshChoco"></img> PoshChoco
 
 [![version](https://img.shields.io/powershellgallery/v/PoshChoco.svg?include_prereleases)](https://www.powershellgallery.com/packages/PoshChoco)
 [![downloads](https://img.shields.io/powershellgallery/dt/PoshChoco.svg?label=downloads)](https://www.powershellgallery.com/stats/packages/PoshChoco?groupby=Version)
