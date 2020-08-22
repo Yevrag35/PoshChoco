@@ -4,7 +4,7 @@ Function New-StringHashSet() {
     [OutputType([System.Collections.Generic.HashSet[string]])]
     param (
         [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
-        [string[]] $InputObject
+        [string[]] $Add
     )
     Begin {
 
@@ -19,9 +19,9 @@ Function New-StringHashSet() {
     }
     Process {
 
-        if ($PSBoundParameters.ContainsKey("InputObject")) {
+        if ($PSBoundParameters.ContainsKey("Add")) {
 
-            $set.UnionWith($InputObject)
+            $set.UnionWith($Add)
         }
     }
     End {

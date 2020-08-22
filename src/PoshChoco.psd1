@@ -12,10 +12,10 @@
 RootModule = 'PoshChoco.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.0'
+ModuleVersion = '0.1.0'
 
 # Supported PSEditions
-CompatiblePSEditions = @('Desktop', 'Core')
+CompatiblePSEditions = 'Desktop', 'Core'
 
 # ID used to uniquely identify this module
 GUID = '1e316ee7-1e2b-4b48-ab2b-0a7a09a4bdfa'
@@ -27,43 +27,37 @@ Author = 'Mike Garvey'
 CompanyName = 'Yevrag35, LLC.'
 
 # Copyright statement for this module
-# Copyright = '(c) Mike Garvey. All rights reserved.'
+Copyright = '(c) 2020 Mike Garvey. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'A PowerShell module wrapper for some chocolatey commands.'
 
-# Minimum version of the PowerShell engine required by this module
+# Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '5.1'
 
-# Name of the PowerShell host required by this module
+# Name of the Windows PowerShell host required by this module
 # PowerShellHostName = ''
 
-# Minimum version of the PowerShell host required by this module
+# Minimum version of the Windows PowerShell host required by this module
 # PowerShellHostVersion = ''
 
 # Minimum version of Microsoft .NET Framework required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
 DotNetFrameworkVersion = '4.0'
 
 # Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-# ClrVersion = ''
+# CLRVersion = ''
 
 # Processor architecture (None, X86, Amd64) required by this module
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @(
-    @{
-        ModuleName = 'ListFunctions'
-        ModuleVersion = '1.1'
-        Guid = '731eae50-355d-4718-a2df-89d9beaae89e'
-    }
-)
+RequiredModules = @(@{ModuleName = 'ListFunctions'; GUID = '731eae50-355d-4718-a2df-89d9beaae89e'; ModuleVersion = '1.1'; })
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-ScriptsToProcess = 'scripts\IgnoreCaseEquality.ps1'
+# ScriptsToProcess = @()
 
 # Type files (.ps1xml) to be loaded when importing this module
 # TypesToProcess = @()
@@ -75,16 +69,17 @@ ScriptsToProcess = 'scripts\IgnoreCaseEquality.ps1'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = '*'
+FunctionsToExport = 'Add-ChocoException', 'Get-ChocoException', 'Get-ChocoPackage', 
+               'Remove-ChocoException'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = @()
+# VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = @()
+AliasesToExport = 'chocolist'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -101,8 +96,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'choco', 'chocolatey', 'function', 'package', 'exception', 'exclusion', 'add', 
-               'remove'
+        Tags = 'choco','chocolatey','function','package','exception','exclusion','add','remove'
 
         # A URL to the license for this module.
         LicenseUri = 'https://raw.githubusercontent.com/Yevrag35/PoshChoco/master/LICENSE'
@@ -127,7 +121,7 @@ PrivateData = @{
 
     } # End of PSData hashtable
 
-} # End of PrivateData hashtable
+ } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
 HelpInfoURI = 'https://github.com/Yevrag35/PoshChoco/issues'
