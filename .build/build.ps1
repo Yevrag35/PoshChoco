@@ -12,4 +12,5 @@ foreach ($pub in Get-ChildItem -Path "$PSScriptRoot\..\src\public" -Filter *.ps1
     [void] $builder.AppendLine()
 }
 
-Set-Content -Path "$PSScriptRoot\..\src\PoshChoco.psm1" -Value $builder.ToString() -Force
+Set-Content -Path "$PSScriptRoot\..\src\PoshChoco.psm1" -Value $builder.ToString() -Force -Encoding UTF8
+$manifest = "$PSScriptRoot\..\src\PoshChoco.psd1"

@@ -1,23 +1,3 @@
-#region PRIVATE
-Function New-StringHashSet([string[]] $Add) {
-
-    $equal = { $x -eq $y }
-    $hash = { $_.ToLower().GetHashCode() }
-    $hashArgs = @{
-        GenericType    = [string]
-        Capacity       = $Add.Length
-        EqualityScript = $equal
-        HashCodeScript = $hash
-    }
-    if ($null -ne $Add -and $Add.Length -gt 0) {
-        $hashArgs.Add("InputObject", $Add)
-    }
-
-    , $(New-HashSet @hashArgs)
-}
-
-#endregion
-
 Function Get-ChocoPackage() {
 
     [CmdletBinding()]

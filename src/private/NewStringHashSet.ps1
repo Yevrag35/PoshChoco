@@ -3,11 +3,12 @@
     [CmdletBinding()]
     [OutputType([System.Collections.Generic.HashSet[string]])]
     param (
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
         [string[]] $InputObject
     )
     Begin {
-        $set = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'
+        $comparer = New-Object -TypeName 'PoshChoco.IgnoreCaseEquality'
+        $set = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'($comparer)
     }
     Process {
         if ($PSBoundParameters.ContainsKey("InputObject")) {
