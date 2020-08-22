@@ -69,7 +69,8 @@ RequiredModules = @(@{ModuleName = 'ListFunctions'; GUID = '731eae50-355d-4718-a
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-ChocoPackage'
+FunctionsToExport = 'Add-ChocoException', 'Get-ChocoException', 'Get-ChocoPackage', 
+               'Remove-ChocoException'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

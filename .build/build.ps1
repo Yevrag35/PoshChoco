@@ -1,9 +1,32 @@
-$builder = New-Object -TypeName "System.Text.StringBuilder"
+Function Add-Line() {
+    param (
+        [Parameter(Mandatory=$false)]
+        [System.Text.StringBuilder] $StringBuilder = $builder,
+
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true, Position=0)]
+        [string[]] $Line
+    )
+    Process {
+        if ($null -eq $Line -or $Line.Count -le 0) {
+            [void] $StringBuilder.AppendLine()
+            break
+        }
+
+        foreach ($singleLine in $Line) {
+            [void] $StringBuilder.AppendLine($singleLine)
+        }
+    }
+}
+
+$builder = New-Object -TypeName 'System.Text.StringBuilder'
+'#region PRIVATE FUNCTIONS', '' | Add-Line
 
 foreach ($priv in $(Get-ChildItem -Path "$PSScriptRoot\..\src\private" -Filter *.ps1 -Recurse)) {
-    [void] $builder.AppendLine((Get-Content -Path $priv.FullName -Raw))
-    [void] $builder.AppendLine()
+
+    @((Get-Content -Path $priv.FullName -Raw), '') | Add-Line
 }
+
+'#endregion', '', '#region PUBLIC FUNCTIONS', '' | Add-Line
 
 $aliases = New-Object -TypeName 'System.Collections.Generic.List[string]'
 
@@ -16,24 +39,27 @@ $aliases = New-Object -TypeName 'System.Collections.Generic.List[string]'
         $line = $content[$i]
 
         if ($line -like "Function*") {
-            [void] $builder.AppendLine(($content[$i..$($content.Count - 1)] -join "`n"))
+
+            $content[$i..$($content.Count - 1)] | Add-Line
             break
         }
 
         if ($line -like "#*Alias:*") {
 
-            $regex = [regex]::Match($line, 'Alias\:\s*((?:\w+|\,)+)', "IgnoreCase")
+            $regex = [regex]::Match($line, 'Alias\:\s*((?:\w+|\,)+)', 'IgnoreCase')
 
             if ($regex.Success) {
-                $aliases.AddRange($regex.Groups[1].Value.Split([string[]]@(','), "RemoveEmptyEntries"))
+                $aliases.AddRange($regex.Groups[1].Value.Split([string[]]@(','), 'RemoveEmptyEntries'))
             }
         }
     }
 
-    [void] $builder.AppendLine()
+    Add-Line ''
 
     [System.IO.Path]::GetFileNameWithoutExtension($pub.Name)
 }
+
+'#endregion' | Add-Line
 
 Set-Content -Path "$PSScriptRoot\..\src\PoshChoco.psm1" -Value $builder.ToString() -Force 
 $manifest = "$PSScriptRoot\..\src\PoshChoco.psd1"
@@ -45,4 +71,4 @@ $updArgs = @{
 }
 
 Update-ModuleManifest @updArgs
-Test-ModuleManifest -Path $manifest
+Test-ModuleManifest -Path $manifest | Select-Object -Property *

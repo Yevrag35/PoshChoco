@@ -1,4 +1,5 @@
 ﻿Function Add-ChocoException() {
+
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true, Position = 0,
@@ -7,6 +8,7 @@
         [string[]] $Exception
     )
     Begin {
+
         $output = choco config get --limit-output --name='upgradeAllExceptions'
         [string[]] $current = $output.Split([string[]]@(','), "RemoveEmptyEntries")
         $set = New-StringHashSet -Add $current
@@ -15,12 +17,15 @@
         $set.UnionWith($Exception)
     }
     End {
+        
         if (-not $set.SetEquals($current)) {
-            $cmd = "--value='{0}'" -f ($set -join ',')
-            choco config set --limit-output --name='upgradeAllExceptions' $cmd
+            
+            $cmd = "--value='{0}'" -f ($set -join ',');
+            $result = choco config set --limit-output --name='upgradeAllExceptions' $cmd;
+            $result
         }
         else {
-            Write-Warning 'The exceptions were not modified due to no differences.'
+            Write-Warning 'The exceptions were not modified due to no differences being found.'
         }
     }
 }

@@ -8,6 +8,7 @@
         [string[]] $Exception
     )
     Begin {
+
         $output = choco config get --limit-output --name='upgradeAllExceptions'
         [string[]] $current = $output.Split([string[]]@(','), "RemoveEmptyEntries")
         $set = New-StringHashSet -Add $current
@@ -16,7 +17,9 @@
         $set.ExceptWith($Exception)
     }
     End {
+
         if (-not $set.SetEquals($current)) {
+            
             $cmd = "--value='{0}'" -f ($set -join ',')
             choco config set --name='upgradeAllExceptions' $cmd
         }
