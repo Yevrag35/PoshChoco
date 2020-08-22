@@ -17,8 +17,25 @@ Function Add-Line() {
         }
     }
 }
+Function Add-Disclaimer() {
+    param (
+        [Parameter(Mandatory=$false)]
+        [System.Text.StringBuilder] $StringBuilder = $builder
+    )
+    @(
+        '$myWinId = [System.Security.Principal.WindowsIdentity]::GetCurrent()',
+        '$myPrinId = New-Object System.Security.Principal.WindowsPrincipal($myWinId)',
+        '$adm = [System.Security.Principal.WindowsBuiltInRole]::Administrator',
+        'if (-not ($myPrinId.IsInRole($adm))) {',
+        "`tWrite-Warning `"This module is intended to be run from an elevated shell.``nRunning as an standard user cause unexpected behavior.`"",
+        "}",
+        ''
+    ) | Add-Line -StringBuilder $StringBuilder
+}
 
 $builder = New-Object -TypeName 'System.Text.StringBuilder'
+Add-Disclaimer
+
 '#region PRIVATE FUNCTIONS', '' | Add-Line
 
 foreach ($priv in $(Get-ChildItem -Path "$PSScriptRoot\..\src\private" -Filter *.ps1 -Recurse)) {

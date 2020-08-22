@@ -1,3 +1,10 @@
+$myWinId = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+$myPrinId = New-Object System.Security.Principal.WindowsPrincipal($myWinId)
+$adm = [System.Security.Principal.WindowsBuiltInRole]::Administrator
+if (-not ($myPrinId.IsInRole($adm))) {
+	Write-Warning "This module is intended to be run from an elevated shell.`nRunning as an standard user cause unexpected behavior."
+}
+
 #region PRIVATE FUNCTIONS
 
 Function Filter-Object() {
@@ -151,6 +158,10 @@ Function Get-ChocoException() {
     )
 
     $output = choco config get --limit-output --name='upgradeAllExceptions'
+    if ([string]::IsNullOrWhitespace($output)) {
+        return
+    }
+
     [string[]] $current = $output -split ','
 
     if ($null -ne $Exception -and $Exception.Length -gt 0) {
