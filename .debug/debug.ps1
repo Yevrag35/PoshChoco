@@ -1,4 +1,4 @@
-﻿foreach ($scr in $(Get-ChildItem -Path "$PSScriptRoot\..\src\scripts" -Filter *.ps1)) {
+foreach ($scr in $(Get-ChildItem -Path "$PSScriptRoot\..\src\scripts" -Filter *.ps1)) {
     . $scr.FullName
 }
 

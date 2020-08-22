@@ -1,4 +1,4 @@
-﻿Function NewStringHashSet() {
+Function NewStringHashSet() {
 
     [CmdletBinding()]
     [OutputType([System.Collections.Generic.HashSet[string]])]

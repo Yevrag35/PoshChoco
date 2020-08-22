@@ -15,7 +15,7 @@ RootModule = 'PoshChoco.psm1'
 ModuleVersion = '1.0.0'
 
 # Supported PSEditions
-# CompatiblePSEditions = @()
+CompatiblePSEditions = @('Desktop', 'Core')
 
 # ID used to uniquely identify this module
 GUID = '1e316ee7-1e2b-4b48-ab2b-0a7a09a4bdfa'
@@ -99,13 +99,13 @@ PrivateData = @{
                'remove'
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://raw.githubusercontent.com/Yevrag35/PoshChoco/master/LICENSE'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://github.com/Yevrag35/PoshChoco'
 
         # A URL to an icon representing this module.
-        # IconUri = ''
+        IconUri = 'https://images.yevrag35.com/icons/poshchoco.png'
 
         # ReleaseNotes of this module
         # ReleaseNotes = ''
