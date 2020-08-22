@@ -1,6 +1,6 @@
 ﻿Function Remove-ChocoException() {
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "Low")]
     param (
         [Parameter(Mandatory = $true, Position = 0,
             ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
@@ -12,16 +12,23 @@
         $output = choco config get --limit-output --name='upgradeAllExceptions'
         [string[]] $current = $output.Split([string[]]@(','), "RemoveEmptyEntries")
         $set = New-StringHashSet -Add $current
+        $excepts = New-StringHashSet
     }
     Process {
-        $set.ExceptWith($Exception)
+        $excepts.UnionWith($Exception)
     }
     End {
 
+        $set.ExceptWith($excepts)
+        
         if (-not $set.SetEquals($current)) {
             
-            $cmd = "--value='{0}'" -f ($set -join ',')
-            choco config set --name='upgradeAllExceptions' $cmd
+            if ($PSCmdlet.ShouldProcess(($excepts -join ', '), "Remove Exception")) {
+
+                $cmd = "--value='{0}'" -f ($set -join ',')
+                $result = choco config set --no-color --limit-output --name='upgradeAllExceptions' $cmd
+                Write-Verbose $result
+            }
         }
         else {
             Write-Warning 'The exceptions were not modified due to no differences.'

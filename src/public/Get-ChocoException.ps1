@@ -15,12 +15,15 @@
     [string[]] $current = $output -split ','
 
     if ($null -ne $Exception -and $Exception.Length -gt 0) {
-        $current.Where({
+        $current = $current.Where({
             $x = $_
             $Exception | Any { $x -like $_ }
         })
     }
-    else {
-        $current
+    
+    foreach ($package in $current) {
+        [pscustomobject]@{
+            Name = $package
+        }
     }
 }

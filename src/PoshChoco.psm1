@@ -43,7 +43,7 @@ Function New-StringHashSet() {
     [OutputType([System.Collections.Generic.HashSet[string]])]
     param (
         [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
-        [string[]] $InputObject
+        [string[]] $Add
     )
     Begin {
 
@@ -58,9 +58,9 @@ Function New-StringHashSet() {
     }
     Process {
 
-        if ($PSBoundParameters.ContainsKey("InputObject")) {
+        if ($PSBoundParameters.ContainsKey("Add")) {
 
-            $set.UnionWith($InputObject)
+            $set.UnionWith($Add)
         }
     }
     End {
@@ -118,29 +118,47 @@ Function Test-Collection() {
 
 Function Add-ChocoException() {
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact = "Low")]
     param (
         [Parameter(Mandatory = $true, Position = 0,
             ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
         [Alias("Name")]
-        [string[]] $Exception
+        [string[]] $Exception,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $PassThru
     )
     Begin {
 
         $output = choco config get --limit-output --name='upgradeAllExceptions'
         [string[]] $current = $output.Split([string[]]@(','), "RemoveEmptyEntries")
         $set = New-StringHashSet -Add $current
+        $excepts = New-StringHashSet
     }
     Process {
-        $set.UnionWith($Exception)
+        $excepts.UnionWith($Exception)
     }
     End {
         
+        $set.UnionWith($excepts)
+        
         if (-not $set.SetEquals($current)) {
-            
-            $cmd = "--value='{0}'" -f ($set -join ',');
-            $result = choco config set --limit-output --name='upgradeAllExceptions' $cmd;
-            $result
+        
+            if ($PSCmdlet.ShouldProcess(($excepts -join ', '), "Add Exception")) {
+
+                $cmd = "--value='{0}'" -f ($set -join ',')
+                $result = choco config set --no-color --limit-output --name='upgradeAllExceptions' $cmd
+                Write-Verbose $result
+
+                if ($PassThru) {
+
+                    foreach ($app in $set) {
+                        [pscustomobject]@{
+                            Name = $app
+                        }
+                    }
+                }
+            }
         }
         else {
             Write-Warning 'The exceptions were not modified due to no differences being found.'
@@ -165,13 +183,16 @@ Function Get-ChocoException() {
     [string[]] $current = $output -split ','
 
     if ($null -ne $Exception -and $Exception.Length -gt 0) {
-        $current.Where({
+        $current = $current.Where({
             $x = $_
             $Exception | Any { $x -like $_ }
         })
     }
-    else {
-        $current
+    
+    foreach ($package in $current) {
+        [pscustomobject]@{
+            Name = $package
+        }
     }
 }
 
@@ -199,7 +220,7 @@ Function Get-ChocoPackage() {
 
 Function Remove-ChocoException() {
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "Low")]
     param (
         [Parameter(Mandatory = $true, Position = 0,
             ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
@@ -211,16 +232,23 @@ Function Remove-ChocoException() {
         $output = choco config get --limit-output --name='upgradeAllExceptions'
         [string[]] $current = $output.Split([string[]]@(','), "RemoveEmptyEntries")
         $set = New-StringHashSet -Add $current
+        $excepts = New-StringHashSet
     }
     Process {
-        $set.ExceptWith($Exception)
+        $excepts.UnionWith($Exception)
     }
     End {
 
+        $set.ExceptWith($excepts)
+        
         if (-not $set.SetEquals($current)) {
             
-            $cmd = "--value='{0}'" -f ($set -join ',')
-            choco config set --name='upgradeAllExceptions' $cmd
+            if ($PSCmdlet.ShouldProcess(($excepts -join ', '), "Remove Exception")) {
+
+                $cmd = "--value='{0}'" -f ($set -join ',')
+                $result = choco config set --no-color --limit-output --name='upgradeAllExceptions' $cmd
+                Write-Verbose $result
+            }
         }
         else {
             Write-Warning 'The exceptions were not modified due to no differences.'
